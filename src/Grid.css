@@ -1,0 +1,22 @@
+.grid {
+  display: grid;
+  gap: 1px;
+}
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.cell:hover {
+  background-color: #ddd;
+}
+
+.cell.occupied {
+  background-color: #4caf50;
+}
