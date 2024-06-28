@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import './Grid.css';
 
 interface GridProps {
-  size: number;
   isPlaying: boolean;
+  width: number;
+  height: number;
 }
 
-const initializeGrid = (size: number) => {
-  const arr = Array.from({ length: size }, () => Array(size).fill(false));
+const initializeGrid = (width: number, height: number) => {
+  const arr = Array.from({ length: height }, () => Array(width).fill(false));
   return arr;
 };
 
-const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
-  const [grid, setGrid] = useState(() => initializeGrid(size));
+const Grid: React.FC<GridProps> = ({ isPlaying, width, height }) => {
+  const [grid, setGrid] = useState(() => initializeGrid(width, height));
 
   const handleCellClick = (row: number, col: number) => {
     setGrid((prevGrid) =>
@@ -22,6 +23,7 @@ const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
 
   useEffect(() => {
     let interval: number;
+
     if (isPlaying) {
       interval = setInterval(() => {
         console.log('playing...');
@@ -38,15 +40,19 @@ const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
               const emptyNeighbors = adjacentCells.filter((val) => {
                 return (
                   val[0] >= 0 &&
-                  val[0] < size &&
+                  val[0] < height &&
                   val[1] >= 0 &&
-                  val[1] < size &&
+                  val[1] < width &&
                   !currentGrid[val[0]][val[1]]
                 );
               });
               const emptyNeighbor = adjacentCells.some(([x, y]) => {
                 return (
-                  x >= 0 && x < size && y >= 0 && y < size && !currentGrid[x][y]
+                  x >= 0 &&
+                  x < height &&
+                  y >= 0 &&
+                  y < width &&
+                  !currentGrid[x][y]
                 );
               });
               if (cell && emptyNeighbor) {
@@ -64,7 +70,7 @@ const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
     }
 
     return () => clearInterval(interval);
-  }, [isPlaying, size]);
+  }, [isPlaying, width, height]);
 
   return (
     <div className="grid">
