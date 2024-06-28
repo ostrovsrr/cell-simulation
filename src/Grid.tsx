@@ -6,8 +6,10 @@ interface GridProps {
   isPlaying: boolean;
 }
 
-const initializeGrid = (size: number) =>
-  Array.from({ length: size }, () => Array(size).fill(false));
+const initializeGrid = (size: number) => {
+  const arr = Array.from({ length: size }, () => Array(size).fill(false));
+  return arr;
+};
 
 const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
   const [grid, setGrid] = useState(() => initializeGrid(size));
@@ -27,13 +29,13 @@ const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
           const newGrid = currentGrid.map((row) => [...row]);
           currentGrid.forEach((row, i) => {
             row.forEach((cell, j) => {
-              const neighbors = [
+              const adjacentCells = [
                 [i - 1, j],
                 [i + 1, j],
                 [i, j - 1],
                 [i, j + 1],
               ];
-              const emptyNeighbors = neighbors.filter((val) => {
+              const emptyNeighbors = adjacentCells.filter((val) => {
                 return (
                   val[0] >= 0 &&
                   val[0] < size &&
@@ -42,7 +44,7 @@ const Grid: React.FC<GridProps> = ({ size, isPlaying }) => {
                   !currentGrid[val[0]][val[1]]
                 );
               });
-              const emptyNeighbor = neighbors.some(([x, y]) => {
+              const emptyNeighbor = adjacentCells.some(([x, y]) => {
                 return (
                   x >= 0 && x < size && y >= 0 && y < size && !currentGrid[x][y]
                 );

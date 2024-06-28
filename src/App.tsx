@@ -3,11 +3,24 @@ import { useState } from 'react';
 
 function App() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [gridKey, setGridKey] = useState(0);
+
+  const [width, setWidth] = useState(20);
+  const [height, setHeight] = useState(20);
+
+  function handleReset() {
+    handleStop();
+    setGridKey((prevKey) => prevKey + 1);
+  }
+
+  function handleStop() {
+    setIsPlaying(false);
+  }
 
   return (
     <>
       <div className="App">
-        <Grid size={20} isPlaying={isPlaying} />
+        <Grid key={gridKey} size={20} isPlaying={isPlaying} />
       </div>
       <button
         onClick={() => {
@@ -16,6 +29,8 @@ function App() {
       >
         Play
       </button>
+      <button onClick={handleReset}>Reset</button>
+      <button onClick={handleStop}>Stop</button>
     </>
   );
 }
