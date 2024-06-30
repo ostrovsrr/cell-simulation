@@ -4,8 +4,10 @@ import { useState } from 'react';
 function App() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [gridKey, setGridKey] = useState(0);
-  const [width, setWidth] = useState<number>(10);
-  const [height, setHeight] = useState<number>(15);
+  const [width, setWidth] = useState<number>(20);
+  const [height, setHeight] = useState<number>(20);
+  const [interval, setInterval] = useState<number>(1);
+  const [bacteries, setBacteries] = useState<number>(0);
 
   function handleReset() {
     handleStop();
@@ -16,13 +18,15 @@ function App() {
     setIsPlaying(false);
   }
 
-  function handleDimensionChange(event: any) {
+  function handleChange(event: any) {
     const { name, value } = event.target;
     const numValue = Number(value);
     if (name == 'width') {
       setWidth(numValue);
     } else if (name == 'height') {
       setHeight(numValue);
+    } else if (name === 'interval') {
+      setInterval(numValue);
     }
     setGridKey((prevKey) => prevKey + 1);
   }
@@ -35,6 +39,9 @@ function App() {
           isPlaying={isPlaying}
           width={width}
           height={height}
+          intervalTime={interval}
+          setBacteries={setBacteries}
+          bacteries={bacteries}
         />
       </div>
       <button
@@ -49,7 +56,7 @@ function App() {
       <input
         name="width"
         type="number"
-        onChange={handleDimensionChange}
+        onChange={handleChange}
         value={width}
         placeholder="Width"
         min={0}
@@ -58,12 +65,24 @@ function App() {
       <input
         name="height"
         type="number"
-        onChange={handleDimensionChange}
+        onChange={handleChange}
         value={height}
         placeholder="Height"
         min={0}
         max={100}
       ></input>
+      <input
+        name="interval"
+        type="number"
+        value={interval}
+        onChange={handleChange}
+        placeholder="Time interval"
+        min={1}
+        max={15}
+      ></input>
+      <p>Time elapsed:</p>
+      <p>Number of bacteries:</p>
+      <p>{bacteries}</p>
     </>
   );
 }

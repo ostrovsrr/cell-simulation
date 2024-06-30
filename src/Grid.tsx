@@ -5,6 +5,9 @@ interface GridProps {
   isPlaying: boolean;
   width: number;
   height: number;
+  intervalTime: number;
+  setBacteries: React.Dispatch<React.SetStateAction<number>>;
+  bacteries: number;
 }
 
 const initializeGrid = (width: number, height: number) => {
@@ -12,12 +15,31 @@ const initializeGrid = (width: number, height: number) => {
   return arr;
 };
 
-const Grid: React.FC<GridProps> = ({ isPlaying, width, height }) => {
+const Grid: React.FC<GridProps> = ({
+  isPlaying,
+  width,
+  height,
+  intervalTime,
+  setBacteries,
+  bacteries,
+}) => {
   const [grid, setGrid] = useState(() => initializeGrid(width, height));
-
   const handleCellClick = (row: number, col: number) => {
     setGrid((prevGrid) =>
-      prevGrid.map((r, i) => r.map((c, j) => (i === row && j === col ? !c : c)))
+      prevGrid.map((r, i) =>
+        r.map((c, j) => {
+          if (i === row && j === col) {
+            if (!c) {
+              setBacteries(bacteries + 1);
+            } else {
+              setBacteries(bacteries - 1);
+            }
+            return !c;
+          } else {
+            return c;
+          }
+        })
+      )
     );
   };
 
@@ -61,12 +83,13 @@ const Grid: React.FC<GridProps> = ({ isPlaying, width, height }) => {
                     Math.floor(Math.random() * emptyNeighbors.length)
                   ];
                 newGrid[rN[0]][rN[1]] = true;
+                // setBacteries(bacteries + 1); does not work properly
               }
             });
           });
           return newGrid;
         });
-      }, 1000);
+      }, intervalTime * 1000);
     }
 
     return () => clearInterval(interval);
