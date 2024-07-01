@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import './Grid.css';
+import bacteriaImage from './assets/images/bacteria.png';
+import popSound from './assets/sounds/pop.mp3';
 
 interface GridProps {
   isPlaying: boolean;
@@ -166,7 +168,7 @@ const Grid: React.FC<GridProps> = ({
           ))}
         </div>
       ))}
-      <audio ref={soundRef} src="./src/assets/sounds/pop.mp3" />
+      <audio ref={soundRef} src={popSound} />
     </div>
   );
 };
@@ -191,7 +193,7 @@ const GridCell = memo(
     >
       {isActive && (
         <img
-          src="./src/assets/images/bacteria.png"
+          src={bacteriaImage}
           className="grid-image"
           style={{ transform: `rotate(${rotation}deg)` }}
           alt="Bacteria"
