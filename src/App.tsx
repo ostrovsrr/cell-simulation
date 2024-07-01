@@ -55,42 +55,71 @@ function App() {
       <h1 className="heading">Cell Growth Simulation</h1>
       <div className="main-container">
         <div className="controllers">
-          <button className="grid-cell--button" onClick={handlePlay}>
+          <button
+            className="grid-cell--button"
+            onClick={handlePlay}
+            aria-pressed={isPlaying}
+          >
             {isPlaying ? 'Pause' : 'Play'}
           </button>
-          <button className="grid-cell--button" onClick={handleReset}>
+          <button
+            className="grid-cell--button"
+            onClick={handleReset}
+            role="button"
+          >
             Reset
           </button>
-          <input
-            name="width"
-            type="tel"
-            onChange={handleChange}
-            value={width}
-            placeholder="Width"
-            min={0}
-            max={100}
-            className="grid-cell--input"
-          ></input>
-          <input
-            className="grid-cell--input"
-            name="height"
-            type="tel"
-            onChange={handleChange}
-            value={height}
-            placeholder="Height"
-            min={0}
-            max={100}
-          ></input>
-          <input
-            className="grid-cell--input"
-            name="interval"
-            type="number"
-            value={intervalTime}
-            onChange={handleChange}
-            placeholder="Time interval"
-            min={1}
-            max={15}
-          ></input>
+
+          <label
+            htmlFor="width-input"
+            className="grid-cell--label"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={width}
+          >
+            Grid Width:
+            <input
+              id="width-input"
+              name="width"
+              type="number"
+              onChange={handleChange}
+              value={width}
+              placeholder="Width"
+              min={0}
+              max={100}
+              className="grid-cell--input"
+            />
+          </label>
+
+          <label htmlFor="height-input" className="grid-cell--label">
+            Grid Height:
+            <input
+              id="height-input"
+              className="grid-cell--input"
+              name="height"
+              type="number"
+              onChange={handleChange}
+              value={height}
+              placeholder="Height"
+              min={0}
+              max={100}
+            />
+          </label>
+
+          <label htmlFor="interval-input" className="grid-cell--label">
+            Division Interval in sec:
+            <input
+              id="interval-input"
+              className="grid-cell--input"
+              name="interval"
+              type="number"
+              value={intervalTime}
+              onChange={handleChange}
+              placeholder="Time interval"
+              min={1}
+              max={15}
+            />
+          </label>
         </div>
         <div>
           <div className="info-container">

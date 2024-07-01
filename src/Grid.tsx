@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import './Grid.css';
 
 interface GridProps {
@@ -13,6 +13,11 @@ interface GridProps {
   handleStop: () => void;
 }
 
+interface CellPosition {
+  row: number;
+  col: number;
+}
+
 const Grid: React.FC<GridProps> = ({
   isPlaying,
   width,
@@ -22,101 +27,80 @@ const Grid: React.FC<GridProps> = ({
   handleStop,
   setCycles,
 }) => {
-  const initializeGrid = (width: number, height: number) => {
-    const arr = Array.from({ length: height }, () => Array(width).fill(false));
-    return arr;
-  };
-  const [grid, setGrid] = useState(() => initializeGrid(width, height));
+  const initializeGrid = useCallback(
+    (width: number, height: number): boolean[][] => {
+      return Array.from({ length: height }, () => Array(width).fill(false));
+    },
+    []
+  );
 
-  const soundRef = useRef<HTMLAudioElement>(null);
-  const handleCellClick = (row: number, col: number) => {
-    setGrid((prevGrid) =>
-      prevGrid.map((r, i) =>
-        r.map((c, j) => {
-          if (i === row && j === col) {
-            playSound(soundRef, 0.2);
-            return !c;
-          } else {
-            return c;
-          }
-        })
-      )
-    );
-  };
+  const [grid, setGrid] = useState<boolean[][]>(() =>
+    initializeGrid(width, height)
+  );
 
-  const initializeRotationGrid = (width: number, height: number) => {
-    const arr = Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => Math.floor(Math.random() * 180))
-    );
-    return arr;
-  };
+  const initializeRotationGrid = useCallback(
+    (width: number, height: number): number[][] => {
+      return Array.from({ length: height }, () =>
+        Array.from({ length: width }, () => Math.floor(Math.random() * 180))
+      );
+    },
+    []
+  );
 
-  const [rotationGrid, setRotationGrid] = useState(() =>
+  const [rotationGrid] = useState<number[][]>(() =>
     initializeRotationGrid(width, height)
   );
 
-  useEffect(() => {
-    let interval: number;
+  const computeNewGrid = useCallback(
+    (currentGrid: boolean[][]): boolean[][] => {
+      const newGrid = currentGrid.map((row) => [...row]);
+      currentGrid.forEach((row, i) => {
+        row.forEach((cell, j) => {
+          const adjacentCells: CellPosition[] = [
+            { row: i - 1, col: j },
+            { row: i + 1, col: j },
+            { row: i, col: j - 1 },
+            { row: i, col: j + 1 },
+          ];
+          const emptyNeighbors = adjacentCells.filter(({ row, col }) => {
+            return (
+              row >= 0 &&
+              row < height &&
+              col >= 0 &&
+              col < width &&
+              !currentGrid[row][col]
+            );
+          });
+          if (cell && emptyNeighbors.length > 0) {
+            const randomNeighbor =
+              emptyNeighbors[Math.floor(Math.random() * emptyNeighbors.length)];
+            newGrid[randomNeighbor.row][randomNeighbor.col] = true;
+          }
+        });
+      });
+      return newGrid;
+    },
+    [width, height]
+  );
 
+  useEffect(() => {
+    let interval: number | null = null;
     if (isPlaying) {
       interval = setInterval(() => {
         console.log('playing...');
         setCycles((prev) => prev + 1);
-        setGrid((currentGrid) => {
-          const newGrid = currentGrid.map((row) => [...row]);
-          let newBacteriesCount = 0;
-          currentGrid.forEach((row, i) => {
-            row.forEach((cell, j) => {
-              // for current grid every single cell
-              // calculate the neighbor cells
-              const adjacentCells = [
-                [i - 1, j],
-                [i + 1, j],
-                [i, j - 1],
-                [i, j + 1],
-              ];
-              const emptyNeighbors = adjacentCells.filter((val) => {
-                return (
-                  val[0] >= 0 &&
-                  val[0] < height &&
-                  val[1] >= 0 &&
-                  val[1] < width &&
-                  !currentGrid[val[0]][val[1]]
-                );
-              });
-              if (cell && emptyNeighbors.length > 0) {
-                const randomNeighbor =
-                  emptyNeighbors[
-                    Math.floor(Math.random() * emptyNeighbors.length)
-                  ];
-                newGrid[randomNeighbor[0]][randomNeighbor[1]] = true;
-                newBacteriesCount += 1;
-              }
-            });
-          });
-
-          return newGrid;
-        });
+        setGrid((currentGrid) => computeNewGrid(currentGrid));
       }, intervalTime * 1000);
     }
 
-    return () => clearInterval(interval);
-  }, [isPlaying, width, height, intervalTime, setBacteries]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying, intervalTime, computeNewGrid]);
 
   useEffect(() => {
     setGrid(initializeGrid(width, height));
-  }, [width, height]);
-
-  const playSound = (
-    audioRef: React.RefObject<HTMLAudioElement>,
-    volume: number = 1
-  ) => {
-    if (audioRef.current) {
-      const sound = audioRef.current.cloneNode(true) as HTMLAudioElement;
-      sound.volume = volume;
-      sound.play();
-    }
-  };
+  }, [width, height, initializeGrid]);
 
   useEffect(() => {
     const bacCount = grid.flat().filter((cell) => cell).length;
@@ -124,39 +108,61 @@ const Grid: React.FC<GridProps> = ({
     if (bacCount === width * height) {
       handleStop();
     }
-  }, [grid, setBacteries]);
+  }, [grid, width, height, setBacteries, handleStop]);
 
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLDivElement>,
-    row: number,
-    col: number
-  ) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      handleCellClick(row, col);
-    }
-  };
+  const soundRef = useRef<HTMLAudioElement>(null);
+  const playSound = useCallback(
+    (audioRef: React.RefObject<HTMLAudioElement>, volume: number = 1) => {
+      if (audioRef.current) {
+        const sound = audioRef.current.cloneNode(true) as HTMLAudioElement;
+        sound.volume = volume;
+        sound.play();
+      }
+    },
+    []
+  );
+
+  const handleCellClick = useCallback(
+    (row: number, col: number) => {
+      setGrid((prevGrid) =>
+        prevGrid.map((r, i) =>
+          r.map((c, j) => {
+            if (i === row && j === col) {
+              playSound(soundRef, 0.2);
+              return !c;
+            } else {
+              return c;
+            }
+          })
+        )
+      );
+    },
+    [playSound]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>, row: number, col: number) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        handleCellClick(row, col);
+      }
+    },
+    [handleCellClick]
+  );
 
   return (
     <div className="grid-container">
       {grid.map((row, i) => (
         <div key={i} className="grid-row">
           {row.map((cell, j) => (
-            <div
+            <GridCell
               key={j}
-              tabIndex={0}
-              className={`grid-cell ${cell ? 'grid-cell--active' : ''}`}
-              onKeyDown={(event) => handleKeyDown(event, i, j)}
+              isActive={cell}
+              rotation={rotationGrid[i][j]}
               onClick={() => handleCellClick(i, j)}
-            >
-              {cell && (
-                <img
-                  src="./src/assets/images/bacteria.png"
-                  className="grid-image"
-                  style={{ transform: `rotate(${rotationGrid[i][j]}deg)` }}
-                  alt="Bacteria"
-                />
-              )}
-            </div>
+              onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) =>
+                handleKeyDown(event, i, j)
+              }
+            />
           ))}
         </div>
       ))}
@@ -164,5 +170,35 @@ const Grid: React.FC<GridProps> = ({
     </div>
   );
 };
+
+const GridCell = memo(
+  ({
+    isActive,
+    rotation,
+    onClick,
+    onKeyDown,
+  }: {
+    isActive: boolean;
+    rotation: number;
+    onClick: () => void;
+    onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  }) => (
+    <div
+      tabIndex={0}
+      className={`grid-cell ${isActive ? 'grid-cell--active' : ''}`}
+      onKeyDown={onKeyDown}
+      onClick={onClick}
+    >
+      {isActive && (
+        <img
+          src="./src/assets/images/bacteria.png"
+          className="grid-image"
+          style={{ transform: `rotate(${rotation}deg)` }}
+          alt="Bacteria"
+        />
+      )}
+    </div>
+  )
+);
 
 export default Grid;
