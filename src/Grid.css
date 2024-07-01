@@ -1,22 +1,58 @@
-.grid {
+.grid-container {
   display: grid;
   gap: 1px;
 }
-.row {
+
+.grid-row {
   display: flex;
 }
 
-.cell {
-  width: 20px;
-  height: 20px;
-  background-color: #fff;
+.grid-cell {
+  width: 40px;
+  height: 40px;
+  background-color: #e0f7fa;
   border: 1px solid #ccc;
+  position: relative;
+  transition: background-color 0.3s;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
-.cell:hover {
-  background-color: #ddd;
+.grid-cell--active {
+  background-color: #00c853;
 }
 
-.cell.occupied {
-  background-color: #4caf50;
+.grid-image {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.grid-cell:hover {
+  background-color: #009688;
+  cursor: pointer;
+}
+
+.grid-cell--button {
+  background-color: #009688;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.grid-cell--button:hover {
+  background-color: darken(#009688, 10%);
+}
+
+.grid-cell--input {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
 }
