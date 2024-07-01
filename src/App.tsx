@@ -39,7 +39,8 @@ function App() {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    let numValue = Number(value) || 0;
+    const cleanedValue = value.replace(/[^0-9]/g, '');
+    let numValue = Number(cleanedValue) || 0;
 
     if (name === 'width' && (numValue < 0 || numValue > 50)) {
       setErrorMessage('Width can be from 0 to 50');
