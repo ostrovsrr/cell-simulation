@@ -57,3 +57,87 @@
   padding: 5px;
   margin: 5px;
 }
+
+@media only screen and (max-width: 600px) {
+  .grid-cell {
+    width: 30px;
+    height: 30px;
+  }
+
+  .grid-cell--button,
+  .grid-cell--input {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .main-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-container,
+  .controllers {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .grid-container {
+    gap: 0.5px;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+  .grid-cell {
+    width: 30px;
+    height: 30px;
+  }
+
+  .grid-cell--button,
+  .grid-cell--input {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .main-container {
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .info-container,
+  .controllers {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .grid-container {
+    gap: 1px;
+  }
+}
+
+@media only screen and (min-width: 901px) {
+  .grid-cell {
+    width: 40px;
+    height: 40px;
+  }
+
+  .grid-cell--button,
+  .grid-cell--input {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .main-container {
+    flex-direction: row;
+    gap: 3rem;
+  }
+
+  .info-container,
+  .controllers {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .grid-container {
+    gap: 1px;
+  }
+}

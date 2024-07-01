@@ -44,3 +44,14 @@
   font-size: 1.5rem;
   font-weight: 700;
 }
+
+.error-message {
+  color: #d8000c;
+  background-color: #ffd2d2;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #d8000c;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}

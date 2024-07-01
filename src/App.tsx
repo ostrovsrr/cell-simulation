@@ -10,15 +10,17 @@ function App() {
   const [intervalTime, setIntervalTime] = useState<number>(1);
   const [bacteries, setBacteries] = useState<number>(0);
   const [cycles, setCycles] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   function handlePlay() {
     if (bacteries === 0 && !isPlaying) {
-      alert('Place bacteria first');
+      setErrorMessage('Place bacteria first');
       return;
-    }
-    if (bacteries === width * height) {
-      alert('No more cells for bacterias!');
+    } else if (bacteries === width * height) {
+      setErrorMessage('No more cells for bacterias!');
       return;
+    } else {
+      setErrorMessage('');
     }
     setIsPlaying(!isPlaying);
   }
@@ -27,6 +29,7 @@ function App() {
     handleStop();
     setBacteries(0);
     setCycles(0);
+    setErrorMessage('');
     setGridKey((prevKey: number) => prevKey + 1);
   }
 
@@ -36,18 +39,24 @@ function App() {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    let numValue: number = Number(value) || 0;
-    if (name === 'width') {
-      numValue = numValue > 100 ? 100 : numValue < 0 ? 0 : numValue;
-      setWidth(numValue);
-    } else if (name === 'height') {
-      numValue = numValue > 100 ? 100 : numValue < 0 ? 0 : numValue;
-      setHeight(numValue);
-    } else if (name === 'interval') {
-      numValue = numValue > 15 ? 15 : numValue < 1 ? 1 : numValue;
-      setIntervalTime(numValue);
+    let numValue = Number(value) || 0;
+
+    if (name === 'width' && (numValue < 0 || numValue > 50)) {
+      setErrorMessage('Width can be from 0 to 50');
+      return;
+    } else if (name === 'height' && (numValue < 0 || numValue > 50)) {
+      setErrorMessage('Height can be from 0 to 50');
+      return;
+    } else if (name === 'interval' && (numValue < 1 || numValue > 10)) {
+      setErrorMessage('Interval can be from 1.0 to 10.0 seconds');
+      return;
+    } else {
+      setErrorMessage('');
+      if (name === 'width') setWidth(numValue);
+      if (name === 'height') setHeight(numValue);
+      if (name === 'interval') setIntervalTime(numValue);
+      setGridKey((prevKey) => prevKey + 1);
     }
-    setGridKey((prevKey: number) => prevKey + 1);
   }
 
   return (
@@ -69,6 +78,7 @@ function App() {
           >
             Reset
           </button>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <label
             htmlFor="width-input"
