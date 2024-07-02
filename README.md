@@ -1,30 +1,32 @@
-# React + TypeScript + Vite
+Bacteria Cell Simulation
+This project shows the spread of bacteria within a customizable grid. Users can start or reset the simulation at any time, providing control over observing the life cycle of bacteria in different cycles.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Features
+Play/Reset the Simulation
+Cycle and Population Tracking by Number of cycles and Number of bacterias
+Customizable grid width and height
+Control the division interval
+Interact with bacteria directly - click on cell to add/remove bacteria
+Sound effects - click on bacteria or cell to enable pop sound
+Mobile responsiveness
 
-Currently, two official plugins are available:
+Instruction to run the project locally:
+Prerequisites:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Installed Node.js and npm
+2. Installed editor e.g. VSCODE
 
-## Expanding the ESLint configuration
+Instruction:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Download ZIP file with the project, extract file
+2. Open terminal and navigate to the extracted location
+3. Run "npm i" to install dependencies
+4. Run "npm run dev" and navigate to the address provided via browser- "http://localhost:5174/cell-simulation/"
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Technologies Used:
+Vite with React: App parent component with Grid component.
+Hooks: useState and useEffect, useRef for sound effects, useMemo for performance
+React Developer Tools
+TypeScript with Strict Mode On for type safety
+Error Handling and user feedback
+Github pages for deployment

@@ -51,6 +51,9 @@ function App() {
     } else if (name === 'interval' && (numValue < 1 || numValue > 10)) {
       setErrorMessage('Interval can be from 1.0 to 10.0 seconds');
       return;
+    } else if (isPlaying) {
+      setErrorMessage("Can't manipulate conditions during simulation");
+      return;
     } else {
       setErrorMessage('');
       if (name === 'width') setWidth(numValue);
