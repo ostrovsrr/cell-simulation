@@ -30,3 +30,9 @@ React Developer Tools
 TypeScript with Strict Mode On for type safety
 Error Handling and user feedback
 Github pages for deployment
+
+Performance Analysis:
+Simulation when user puts a single bacteria in the corner will take 18 cycles to occupy the entire grid. Using React Developer Tools Profiler, let's analyze rerender time. It takes 39 commits which render time vary from 1.9 ms to 4.2ms. memo and useCallback were utilized to improve performance.
+
+![Fastest commit](src\assets\images\ss1.png)
+![Slowest commit](src\assets\images\ss2.png)
