@@ -152,9 +152,9 @@ const Grid: React.FC<GridProps> = ({
   );
 
   return (
-    <div className="grid-container">
+    <div className="grid-container" role="grid">
       {grid.map((row, i) => (
-        <div key={i} className="grid-row">
+        <div key={i} className="grid-row" role="row">
           {row.map((cell, j) => (
             <GridCell
               key={j}
@@ -164,6 +164,7 @@ const Grid: React.FC<GridProps> = ({
               onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) =>
                 handleKeyDown(event, i, j)
               }
+              aria-selected={cell}
             />
           ))}
         </div>
@@ -190,6 +191,8 @@ const GridCell = memo(
       className={`grid-cell ${isActive ? 'grid-cell--active' : ''}`}
       onKeyDown={onKeyDown}
       onClick={onClick}
+      role="gridcell"
+      aria-selected={isActive}
     >
       {isActive && (
         <img

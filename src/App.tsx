@@ -81,13 +81,7 @@ function App() {
           </button>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-          <label
-            htmlFor="width-input"
-            className="grid-cell--label"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={width}
-          >
+          <label htmlFor="width-input" className="grid-cell--label">
             Grid Width:
             <input
               id="width-input"
@@ -97,7 +91,10 @@ function App() {
               value={width}
               placeholder="Width"
               min={0}
-              max={100}
+              max={50}
+              aria-valuemin={0}
+              aria-valuemax={50}
+              aria-valuenow={width}
               className="grid-cell--input"
             />
           </label>
@@ -113,7 +110,10 @@ function App() {
               value={height}
               placeholder="Height"
               min={0}
-              max={100}
+              max={50}
+              aria-valuemin={0}
+              aria-valuemax={50}
+              aria-valuenow={height}
             />
           </label>
 
@@ -128,7 +128,10 @@ function App() {
               onChange={handleChange}
               placeholder="Time interval"
               min={1}
-              max={15}
+              max={10}
+              aria-valuemin={1}
+              aria-valuemax={10}
+              aria-valuenow={intervalTime}
             />
           </label>
         </div>
